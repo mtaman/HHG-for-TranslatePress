@@ -1,0 +1,38 @@
+/* HHG for TranslatePress Admin Styles */
+.trp-engine {
+    margin-bottom: 20px;
+}
+
+.trp-automatic-translation-api-key-container {
+    margin-bottom: 15px;
+}
+
+.trp-text-input-error {
+    border-color: #dc3232;
+}
+
+.trp-error-inline {
+    color: #dc3232;
+    font-size: 12px;
+    display: block;
+    margin-top: 5px;
+}
+
+.trp-description-text {
+    font-size: 13px;
+    color: #666;
+    margin-top: 10px;
+}
+
+.trp-primary-text-bold {
+    font-weight: 600;
+    color: #23282d;
+}
+
+#hhgfotr-openai-custom-model-container {
+    margin-top: 10px;
+}
+
+.trp-select {
+    min-width: 200px;
+}
