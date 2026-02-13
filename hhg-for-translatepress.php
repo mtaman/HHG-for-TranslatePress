@@ -4,7 +4,7 @@
  * Plugin Name: HHG for TranslatePress
  * Plugin URI: https://huhonggang.com/hhg-for-translatepress/
  * Description: Google Gemini AI, OpenAI GPT, ZhiPu AI, Yandex Translation, The engine is integrated into the plugin TranslatePress as a translation source.
- * Version: 1.0.4
+ * Version: 1.1.55
  * Author: huhonggang
  * Author URI: https://huhonggang.com/
  * Text Domain: hhg-for-translatepress
@@ -282,43 +282,50 @@ class HHGFOTR_TranslatePress {
         $is_active = in_array( $translation_engine, array( 'hhgfotr_gemini', 'hhg_gemini' ), true );
         ?>
 
-        <div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_gemini" style="<?php echo $is_active ? '' : 'display: none;'; ?>">
-            <span class="trp-primary-text-bold"><?php esc_html_e( 'Google Gemini API Key', 'hhg-for-translatepress' ); ?></span>
+<div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_gemini"
+    style="<?php echo $is_active ? '' : 'display: none;'; ?>">
+    <span class="trp-primary-text-bold"><?php esc_html_e( 'Google Gemini API Key', 'hhg-for-translatepress' ); ?></span>
 
-            <div class="trp-automatic-translation-api-key-container">
-                <input type="text" id="hhgfotr-gemini-key" placeholder="<?php esc_html_e( 'Add your API Key here...', 'hhg-for-translatepress' ); ?>" 
-                       class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>" 
-                        name="trp_machine_translation_settings[hhgfotr-gemini-key]" 
-                       value="<?php echo esc_attr( $api_key ); ?>" style="width: 100%;max-width:480px;" />
-                <?php
+    <div class="trp-automatic-translation-api-key-container">
+        <input type="text" id="hhgfotr-gemini-key"
+            placeholder="<?php esc_html_e( 'Add your API Key here...', 'hhg-for-translatepress' ); ?>"
+            class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>"
+            name="trp_machine_translation_settings[hhgfotr-gemini-key]" value="<?php echo esc_attr( $api_key ); ?>"
+            style="width: 100%;max-width:480px;" />
+        <?php
                 if ( $is_active && function_exists( 'trp_output_svg' ) ) {
                     $machine_translator->automatic_translation_svg_output( $show_errors );
                 }
                 ?>
-            </div>
+    </div>
 
-            <?php if ( $show_errors ) : ?>
-                <span class="trp-error-inline trp-settings-error-text">
-                    <?php echo wp_kses_post( $error_message ); ?>
-                </span>
-            <?php endif; ?>
+    <?php if ( $show_errors ) : ?>
+    <span class="trp-error-inline trp-settings-error-text">
+        <?php echo wp_kses_post( $error_message ); ?>
+    </span>
+    <?php endif; ?>
 
-            <div class="trp-gemini-model-container" style="margin-top: 15px;">
-               <p><span class="trp-primary-text-bold"><?php esc_html_e( 'Gemini Model', 'hhg-for-translatepress' ); ?></span></p>
-                <select id="hhgfotr-gemini-model" name="trp_machine_translation_settings[hhgfotr-gemini-model]" class="trp-select" style="width: 100%;max-width:480px;">
-                    <option value="gemini-2.5-flash" <?php selected( $model, 'gemini-2.5-flash' ); ?>><?php esc_html_e( 'Gemini 2.5 Flash (Fast)', 'hhg-for-translatepress' ); ?></option>
-                    <option value="gemini-2.5-flash-lite" <?php selected( $model, 'gemini-2.5-flash-lite' ); ?>><?php esc_html_e( 'Gemini 2.5 Flash-Lite (Cheaper & Fast)', 'hhg-for-translatepress' ); ?></option>
-                    <option value="gemini-3-pro-preview" <?php selected( $model, 'gemini-3-pro-preview' ); ?>><?php esc_html_e( 'Gemini 3 Pro (Preview)', 'hhg-for-translatepress' ); ?></option>
-                </select>
-            </div>
+    <div class="trp-gemini-model-container" style="margin-top: 15px;">
+        <p><span class="trp-primary-text-bold"><?php esc_html_e( 'Gemini Model', 'hhg-for-translatepress' ); ?></span>
+        </p>
+        <select id="hhgfotr-gemini-model" name="trp_machine_translation_settings[hhgfotr-gemini-model]"
+            class="trp-select" style="width: 100%;max-width:480px;">
+            <option value="gemini-2.5-flash" <?php selected( $model, 'gemini-2.5-flash' ); ?>>
+                <?php esc_html_e( 'Gemini 2.5 Flash (Fast)', 'hhg-for-translatepress' ); ?></option>
+            <option value="gemini-2.5-flash-lite" <?php selected( $model, 'gemini-2.5-flash-lite' ); ?>>
+                <?php esc_html_e( 'Gemini 2.5 Flash-Lite (Cheaper & Fast)', 'hhg-for-translatepress' ); ?></option>
+            <option value="gemini-3-pro-preview" <?php selected( $model, 'gemini-3-pro-preview' ); ?>>
+                <?php esc_html_e( 'Gemini 3 Pro (Preview)', 'hhg-for-translatepress' ); ?></option>
+        </select>
+    </div>
 
-            <span class="trp-description-text">
-                <?php echo wp_kses( __( 'Visit <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a> to get your API key. Gemini 2.5 models offer the fastest translation speeds with optimized rate limits.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
-                
-            </span>
-        </div>
+    <span class="trp-description-text">
+        <?php echo wp_kses( __( 'Visit <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a> to get your API key. Gemini 2.5 models offer the fastest translation speeds with optimized rate limits.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
 
-        <?php
+    </span>
+</div>
+
+<?php
     }
 
     private function add_hunyuan_settings( $mt_settings, $machine_translator, $translation_engine ) {
@@ -340,30 +347,48 @@ class HHGFOTR_TranslatePress {
         }
         $is_active = in_array( $translation_engine, array( 'hhgfotr_hunyuan', 'hhg_hunyuan' ), true );
         ?>
-        <div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_hunyuan" style="<?php echo $is_active ? '' : 'display: none;'; ?>">
-            <span class="trp-primary-text-bold"><?php esc_html_e( 'Tencent Hunyuan SecretId', 'hhg-for-translatepress' ); ?></span>
-            <div class="trp-automatic-translation-api-key-container">
-                <input type="text" id="hhgfotr-hunyuan-secret-id" name="trp_machine_translation_settings[hhgfotr-hunyuan-secret-id]" value="<?php echo esc_attr( $secret_id ); ?>" placeholder="<?php esc_attr_e( 'Enter your SecretId...', 'hhg-for-translatepress' ); ?>" class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>" style="width: 100%;max-width:480px;" />
-                <?php if ( $show_errors ) : ?>
-                    <span class="trp-error-inline trp-settings-error-text"><?php echo esc_html( $error_message ); ?></span>
-                <?php endif; ?>
-            </div>
-            <span class="trp-primary-text-bold" style="margin-top:15px;display:block;"><?php esc_html_e( 'Tencent Hunyuan SecretKey', 'hhg-for-translatepress' ); ?></span>
-            <div class="trp-automatic-translation-api-key-container">
-                <input type="password" id="hhgfotr-hunyuan-secret-key" name="trp_machine_translation_settings[hhgfotr-hunyuan-secret-key]" value="<?php echo esc_attr( $secret_key ); ?>" placeholder="<?php esc_attr_e( 'Enter your SecretKey...', 'hhg-for-translatepress' ); ?>" class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>" style="width: 100%;max-width:480px;" />
-            </div>
-            <div class="trp-hunyuan-model-container" style="margin-top: 15px;">
-                <p><span class="trp-primary-text-bold"><?php esc_html_e( 'Tencent Hunyuan Model', 'hhg-for-translatepress' ); ?></span></p>
-                <select id="hhgfotr-hunyuan-model" name="trp_machine_translation_settings[hhgfotr-hunyuan-model]" class="trp-select" style="max-width:480px;">
-                    <option value="hunyuan-translation" <?php selected( $model, 'hunyuan-translation' ); ?>><?php esc_html_e( 'Hunyuan Translation', 'hhg-for-translatepress' ); ?></option>
-                    <option value="hunyuan-translation-lite" <?php selected( $model, 'hunyuan-translation-lite' ); ?>><?php esc_html_e( 'Hunyuan Translation Lite', 'hhg-for-translatepress' ); ?></option>
-                </select>
-            </div>
-            <span class="trp-description-text" style="display:block;margin-top:10px;">
-                <?php echo wp_kses( __( 'Visit the <a href="https://console.cloud.tencent.com/hunyuan" target="_blank">Tencent Hunyuan Console</a> for your API credentials. The Hunyuan model provides high-quality Chinese translation services.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
-            </span>
-        </div>
-        <?php
+<div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_hunyuan"
+    style="<?php echo $is_active ? '' : 'display: none;'; ?>">
+    <span
+        class="trp-primary-text-bold"><?php esc_html_e( 'Tencent Hunyuan SecretId', 'hhg-for-translatepress' ); ?></span>
+    <div class="trp-automatic-translation-api-key-container">
+        <input type="text" id="hhgfotr-hunyuan-secret-id"
+            name="trp_machine_translation_settings[hhgfotr-hunyuan-secret-id]"
+            value="<?php echo esc_attr( $secret_id ); ?>"
+            placeholder="<?php esc_attr_e( 'Enter your SecretId...', 'hhg-for-translatepress' ); ?>"
+            class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>"
+            style="width: 100%;max-width:480px;" />
+        <?php if ( $show_errors ) : ?>
+        <span class="trp-error-inline trp-settings-error-text"><?php echo esc_html( $error_message ); ?></span>
+        <?php endif; ?>
+    </div>
+    <span class="trp-primary-text-bold"
+        style="margin-top:15px;display:block;"><?php esc_html_e( 'Tencent Hunyuan SecretKey', 'hhg-for-translatepress' ); ?></span>
+    <div class="trp-automatic-translation-api-key-container">
+        <input type="password" id="hhgfotr-hunyuan-secret-key"
+            name="trp_machine_translation_settings[hhgfotr-hunyuan-secret-key]"
+            value="<?php echo esc_attr( $secret_key ); ?>"
+            placeholder="<?php esc_attr_e( 'Enter your SecretKey...', 'hhg-for-translatepress' ); ?>"
+            class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>"
+            style="width: 100%;max-width:480px;" />
+    </div>
+    <div class="trp-hunyuan-model-container" style="margin-top: 15px;">
+        <p><span
+                class="trp-primary-text-bold"><?php esc_html_e( 'Tencent Hunyuan Model', 'hhg-for-translatepress' ); ?></span>
+        </p>
+        <select id="hhgfotr-hunyuan-model" name="trp_machine_translation_settings[hhgfotr-hunyuan-model]"
+            class="trp-select" style="max-width:480px;">
+            <option value="hunyuan-translation" <?php selected( $model, 'hunyuan-translation' ); ?>>
+                <?php esc_html_e( 'Hunyuan Translation', 'hhg-for-translatepress' ); ?></option>
+            <option value="hunyuan-translation-lite" <?php selected( $model, 'hunyuan-translation-lite' ); ?>>
+                <?php esc_html_e( 'Hunyuan Translation Lite', 'hhg-for-translatepress' ); ?></option>
+        </select>
+    </div>
+    <span class="trp-description-text" style="display:block;margin-top:10px;">
+        <?php echo wp_kses( __( 'Visit the <a href="https://console.cloud.tencent.com/hunyuan" target="_blank">Tencent Hunyuan Console</a> for your API credentials. The Hunyuan model provides high-quality Chinese translation services.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
+    </span>
+</div>
+<?php
     }
 
     private function add_openai_settings( $mt_settings, $machine_translator, $translation_engine ) {
@@ -386,57 +411,66 @@ class HHGFOTR_TranslatePress {
         }
         $is_active = in_array( $translation_engine, array( 'hhgfotr_openai', 'hhg_openai' ), true );
         ?>
-        <div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_openai" style="<?php echo $is_active ? '' : 'display: none;'; ?>">
-            <span class="trp-primary-text-bold"><?php esc_html_e( 'OpenAI API Key', 'hhg-for-translatepress' ); ?></span>
-            <div class="trp-automatic-translation-api-key-container">
-                <input type="text" id="hhgfotr-openai-key" placeholder="<?php esc_html_e( 'Add your API Key here...', 'hhg-for-translatepress' ); ?>" 
-                       class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>" 
-                        name="trp_machine_translation_settings[hhgfotr-openai-key]" 
-                       value="<?php echo esc_attr( $api_key ); ?>" style="width: 100%;max-width:480px;" />
-                <?php
+<div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_openai"
+    style="<?php echo $is_active ? '' : 'display: none;'; ?>">
+    <span class="trp-primary-text-bold"><?php esc_html_e( 'OpenAI API Key', 'hhg-for-translatepress' ); ?></span>
+    <div class="trp-automatic-translation-api-key-container">
+        <input type="text" id="hhgfotr-openai-key"
+            placeholder="<?php esc_html_e( 'Add your API Key here...', 'hhg-for-translatepress' ); ?>"
+            class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>"
+            name="trp_machine_translation_settings[hhgfotr-openai-key]" value="<?php echo esc_attr( $api_key ); ?>"
+            style="width: 100%;max-width:480px;" />
+        <?php
                 if ( $is_active && function_exists( 'trp_output_svg' ) ) {
                     $machine_translator->automatic_translation_svg_output( $show_errors );
                 }
                 ?>
-            </div>
-            <?php if ( $show_errors ) : ?>
-                <span class="trp-error-inline trp-settings-error-text">
-                    <?php echo wp_kses_post( $error_message ); ?>
-                </span>
-            <?php endif; ?>
-            <div class="trp-openai-endpoint-container" style="margin-top: 15px;">
-                <p><span class="trp-primary-text-bold"><?php esc_html_e( 'OpenAI API Endpoint', 'hhg-for-translatepress' ); ?></span></p>
-                <input type="text" id="hhgfotr-openai-endpoint" 
-                       name="trp_machine_translation_settings[hhgfotr-openai-endpoint]" 
-                       value="<?php echo esc_attr( $endpoint ); ?>" 
-                       placeholder="https://api.openai.com/v1/chat/completions"
-                       class="trp-text-input" style="width: 100%;max-width:480px;" />
-            </div>
-            <div class="trp-openai-model-container" style="margin-top: 15px;">
-               <p><span class="trp-primary-text-bold"><?php esc_html_e( 'OpenAI Model', 'hhg-for-translatepress' ); ?></span></p>
-                <select id="hhgfotr-openai-model" name="trp_machine_translation_settings[hhgfotr-openai-model]" class="trp-select" style="max-width:480px;">
-                    <option value="gpt-4o-mini" <?php selected( $model, 'gpt-4o-mini' ); ?>><?php esc_html_e( 'GPT-4o Mini (Hot)', 'hhg-for-translatepress' ); ?></option>
-                    <option value="gpt-4o" <?php selected( $model, 'gpt-4o' ); ?>><?php esc_html_e( 'GPT-4o', 'hhg-for-translatepress' ); ?></option>
-                    <option value="gpt-4-turbo" <?php selected( $model, 'gpt-4-turbo' ); ?>><?php esc_html_e( 'GPT-4 Turbo', 'hhg-for-translatepress' ); ?></option>
-                    <option value="gpt-3.5-turbo" <?php selected( $model, 'gpt-3.5-turbo' ); ?>><?php esc_html_e( 'GPT-3.5 Turbo', 'hhg-for-translatepress' ); ?></option>
-                    <option value="custom" <?php selected( $model, 'custom' ); ?>><?php esc_html_e( 'Custom Models', 'hhg-for-translatepress' ); ?></option>
-                </select>
-                <div id="hhgfotr-openai-custom-model-container" style="margin-top:10px;<?php echo $model === 'custom' ? '' : 'display:none;'; ?>">
-                    <input type="text" id="hhgfotr-openai-custom-model" 
-                           name="trp_machine_translation_settings[hhgfotr-openai-custom-model]" 
-                           value="<?php echo esc_attr( $custom_model ); ?>" 
-                           placeholder="ex: gpt-o1-preview"
-                           class="trp-text-input" style="width: 100%;max-width:480px;" />
-                    <span class="trp-description-text">
-                        <?php esc_html_e( 'Enter your custom OpenAI model name', 'hhg-for-translatepress' ); ?>
-                    </span>
-                </div>
-            </div>
+    </div>
+    <?php if ( $show_errors ) : ?>
+    <span class="trp-error-inline trp-settings-error-text">
+        <?php echo wp_kses_post( $error_message ); ?>
+    </span>
+    <?php endif; ?>
+    <div class="trp-openai-endpoint-container" style="margin-top: 15px;">
+        <p><span
+                class="trp-primary-text-bold"><?php esc_html_e( 'OpenAI API Endpoint', 'hhg-for-translatepress' ); ?></span>
+        </p>
+        <input type="text" id="hhgfotr-openai-endpoint" name="trp_machine_translation_settings[hhgfotr-openai-endpoint]"
+            value="<?php echo esc_attr( $endpoint ); ?>" placeholder="https://api.openai.com/v1/chat/completions"
+            class="trp-text-input" style="width: 100%;max-width:480px;" />
+    </div>
+    <div class="trp-openai-model-container" style="margin-top: 15px;">
+        <p><span class="trp-primary-text-bold"><?php esc_html_e( 'OpenAI Model', 'hhg-for-translatepress' ); ?></span>
+        </p>
+        <select id="hhgfotr-openai-model" name="trp_machine_translation_settings[hhgfotr-openai-model]"
+            class="trp-select" style="max-width:480px;">
+            <option value="gpt-4o-mini" <?php selected( $model, 'gpt-4o-mini' ); ?>>
+                <?php esc_html_e( 'GPT-4o Mini (Hot)', 'hhg-for-translatepress' ); ?></option>
+            <option value="gpt-4o" <?php selected( $model, 'gpt-4o' ); ?>>
+                <?php esc_html_e( 'GPT-4o', 'hhg-for-translatepress' ); ?></option>
+            <option value="gpt-4-turbo" <?php selected( $model, 'gpt-4-turbo' ); ?>>
+                <?php esc_html_e( 'GPT-4 Turbo', 'hhg-for-translatepress' ); ?></option>
+            <option value="gpt-3.5-turbo" <?php selected( $model, 'gpt-3.5-turbo' ); ?>>
+                <?php esc_html_e( 'GPT-3.5 Turbo', 'hhg-for-translatepress' ); ?></option>
+            <option value="custom" <?php selected( $model, 'custom' ); ?>>
+                <?php esc_html_e( 'Custom Models', 'hhg-for-translatepress' ); ?></option>
+        </select>
+        <div id="hhgfotr-openai-custom-model-container"
+            style="margin-top:10px;<?php echo $model === 'custom' ? '' : 'display:none;'; ?>">
+            <input type="text" id="hhgfotr-openai-custom-model"
+                name="trp_machine_translation_settings[hhgfotr-openai-custom-model]"
+                value="<?php echo esc_attr( $custom_model ); ?>" placeholder="ex: gpt-o1-preview" class="trp-text-input"
+                style="width: 100%;max-width:480px;" />
             <span class="trp-description-text">
-                <?php echo wp_kses( __( 'Visit <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a> to get your API key. GPT-4o models offer the fastest translation speeds with optimized performance.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
+                <?php esc_html_e( 'Enter your custom OpenAI model name', 'hhg-for-translatepress' ); ?>
             </span>
         </div>
-        <?php
+    </div>
+    <span class="trp-description-text">
+        <?php echo wp_kses( __( 'Visit <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a> to get your API key. GPT-4o models offer the fastest translation speeds with optimized performance.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
+    </span>
+</div>
+<?php
     }
 
     private function add_zhipu_settings( $mt_settings, $machine_translator, $translation_engine ) {
@@ -461,47 +495,58 @@ class HHGFOTR_TranslatePress {
         $is_active = in_array( $translation_engine, array( 'hhgfotr_zhipu', 'hhg_zhipu' ), true );
         ?>
 
-        <div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_zhipu" style="<?php echo $is_active ? '' : 'display: none;'; ?>">
-            <span class="trp-primary-text-bold"><?php esc_html_e( 'ZhiPu AI API Key', 'hhg-for-translatepress' ); ?></span>
+<div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_zhipu"
+    style="<?php echo $is_active ? '' : 'display: none;'; ?>">
+    <span class="trp-primary-text-bold"><?php esc_html_e( 'ZhiPu AI API Key', 'hhg-for-translatepress' ); ?></span>
 
-            <div class="trp-automatic-translation-api-key-container">
-                <input type="text" id="hhgfotr-zhipu-key" placeholder="<?php esc_html_e( 'Add your API Key here...', 'hhg-for-translatepress' ); ?>" 
-                       class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>" 
-                        name="trp_machine_translation_settings[hhgfotr-zhipu-key]" 
-                       value="<?php echo esc_attr( $api_key ); ?>" style="width: 100%;max-width:480px;" />
-                <?php
+    <div class="trp-automatic-translation-api-key-container">
+        <input type="text" id="hhgfotr-zhipu-key"
+            placeholder="<?php esc_html_e( 'Add your API Key here...', 'hhg-for-translatepress' ); ?>"
+            class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>"
+            name="trp_machine_translation_settings[hhgfotr-zhipu-key]" value="<?php echo esc_attr( $api_key ); ?>"
+            style="width: 100%;max-width:480px;" />
+        <?php
                 if ( $is_active && function_exists( 'trp_output_svg' ) ) {
                     $machine_translator->automatic_translation_svg_output( $show_errors );
                 }
                 ?>
-            </div>
+    </div>
 
-            <?php if ( $show_errors ) : ?>
-                <span class="trp-error-inline trp-settings-error-text">
-                    <?php echo wp_kses_post( $error_message ); ?>
-                </span>
-            <?php endif; ?>
+    <?php if ( $show_errors ) : ?>
+    <span class="trp-error-inline trp-settings-error-text">
+        <?php echo wp_kses_post( $error_message ); ?>
+    </span>
+    <?php endif; ?>
 
-        <div class="trp-zhipu-model-container" style="margin-top: 15px;">
-           <p><span class="trp-primary-text-bold"><?php esc_html_e( 'Translation Strategy', 'hhg-for-translatepress' ); ?></span></p>
-            <select id="hhgfotr-zhipu-model" name="trp_machine_translation_settings[hhgfotr-zhipu-model]" class="trp-select" style="width: 100%;max-width:480px;">
-                <option value="general" <?php selected( $model, 'general' ); ?>><?php esc_html_e( 'General (Default)', 'hhg-for-translatepress' ); ?></option>
-                <option value="paraphrase" <?php selected( $model, 'paraphrase' ); ?>><?php esc_html_e( 'Paraphrase (More Natural)', 'hhg-for-translatepress' ); ?></option>
-                <option value="two_step" <?php selected( $model, 'two_step' ); ?>><?php esc_html_e( 'Two Step (Review & Refine)', 'hhg-for-translatepress' ); ?></option>
-                <option value="three_step" <?php selected( $model, 'three_step' ); ?>><?php esc_html_e( 'Three Step (Deep Analysis)', 'hhg-for-translatepress' ); ?></option>
-                <option value="reflection" <?php selected( $model, 'reflection' ); ?>><?php esc_html_e( 'Reflection (Self-Correction)', 'hhg-for-translatepress' ); ?></option>
-                <option value="cot" <?php selected( $model, 'cot' ); ?>><?php esc_html_e( 'Chain of Thought (Reasoning)', 'hhg-for-translatepress' ); ?></option>
-            </select>
-        </div>
+    <div class="trp-zhipu-model-container" style="margin-top: 15px;">
+        <p><span
+                class="trp-primary-text-bold"><?php esc_html_e( 'Translation Strategy', 'hhg-for-translatepress' ); ?></span>
+        </p>
+        <select id="hhgfotr-zhipu-model" name="trp_machine_translation_settings[hhgfotr-zhipu-model]" class="trp-select"
+            style="width: 100%;max-width:480px;">
+            <option value="general" <?php selected( $model, 'general' ); ?>>
+                <?php esc_html_e( 'General (Default)', 'hhg-for-translatepress' ); ?></option>
+            <option value="paraphrase" <?php selected( $model, 'paraphrase' ); ?>>
+                <?php esc_html_e( 'Paraphrase (More Natural)', 'hhg-for-translatepress' ); ?></option>
+            <option value="two_step" <?php selected( $model, 'two_step' ); ?>>
+                <?php esc_html_e( 'Two Step (Review & Refine)', 'hhg-for-translatepress' ); ?></option>
+            <option value="three_step" <?php selected( $model, 'three_step' ); ?>>
+                <?php esc_html_e( 'Three Step (Deep Analysis)', 'hhg-for-translatepress' ); ?></option>
+            <option value="reflection" <?php selected( $model, 'reflection' ); ?>>
+                <?php esc_html_e( 'Reflection (Self-Correction)', 'hhg-for-translatepress' ); ?></option>
+            <option value="cot" <?php selected( $model, 'cot' ); ?>>
+                <?php esc_html_e( 'Chain of Thought (Reasoning)', 'hhg-for-translatepress' ); ?></option>
+        </select>
+    </div>
 
-        
 
-            <span class="trp-description-text">
-               <?php echo wp_kses( __( 'Visit the <a href="https://www.bigmodel.cn/invite?icode=BOAFyzK705RHkwZsGiYl40jPr3uHog9F4g5tjuOUqno%3D" target="_blank">ZhiPu AI</a> to get your API key. Select a strategy that best fits your content type.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
-            </span>
-        </div>
 
-        <?php
+    <span class="trp-description-text">
+        <?php echo wp_kses( __( 'Visit the <a href="https://www.bigmodel.cn/invite?icode=BOAFyzK705RHkwZsGiYl40jPr3uHog9F4g5tjuOUqno%3D" target="_blank">ZhiPu AI</a> to get your API key. Select a strategy that best fits your content type.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
+    </span>
+</div>
+
+<?php
     }
 
     private function get_setting_value( $key, $settings ) {
