@@ -27,8 +27,15 @@ class TRP_HHGFOTR_Yandex_Machine_Translator extends TRP_Machine_Translator {
             'timeout' => 45,
             'max_tokens' => 8192,
             'temperature' => 0.01,
-            'top_p' => 0.95
+            'top_p' => 0.95,
+            'safety_threshold' => 'BLOCK_ONLY_HIGH'
         );
+
+
+        if ( strpos( $model, 'pro' ) !== false ) {
+            $base_config['chunk_size'] = 14;
+            $base_config['temperature'] = 0.02;
+        }
 
         return $base_config;
     }
@@ -177,7 +184,8 @@ class TRP_HHGFOTR_Yandex_Machine_Translator extends TRP_Machine_Translator {
 
     public function get_available_models() {
         return array(
-            'yandex' => 'Yandex Translator'
+            'yandex' => 'Yandex Translator',
+            'yandex-pro' => 'Yandex Pro Translator'
         );
     }
 
