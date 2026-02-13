@@ -3,7 +3,7 @@
 /**
  * Plugin Name: HHG for TranslatePress
  * Plugin URI: https://huhonggang.com/hhg-for-translatepress/
- * Description: Google Gemini AI, OpenAI GPT, ZhiPu AI, The engine is integrated into the plugin TranslatePress as a translation source.
+ * Description: Google Gemini AI, OpenAI GPT, ZhiPu AI, Yandex Translation, The engine is integrated into the plugin TranslatePress as a translation source.
  * Version: 1.0.4
  * Author: huhonggang
  * Author URI: https://huhonggang.com/
@@ -124,6 +124,9 @@ class HHGFOTR_TranslatePress {
         if ( file_exists( HHGFOTR_PLUGIN_DIR . 'includes/zhipu/functions.php' ) ) {
             require_once HHGFOTR_PLUGIN_DIR . 'includes/zhipu/functions.php';
         }
+        if ( file_exists( HHGFOTR_PLUGIN_DIR . 'includes/yandex/functions.php' ) ) {
+            require_once HHGFOTR_PLUGIN_DIR . 'includes/yandex/functions.php';
+        }
     }
 
     public function register_engine_classes( $classes ) {
@@ -141,15 +144,23 @@ class HHGFOTR_TranslatePress {
                     require_once $path;
                 }
             }
+            
+            // Load Yandex translator if it exists
+            $yandex_path = HHGFOTR_PLUGIN_DIR . 'includes/yandex/class-yandex-translator.php';
+            if ( file_exists( $yandex_path ) ) {
+                require_once $yandex_path;
+            }
         }
         $classes['hhgfotr_gemini'] = 'TRP_HHGFOTR_Gemini_Machine_Translator';
         $classes['hhgfotr_hunyuan'] = 'TRP_HHGFOTR_Hunyuan_Machine_Translator';
         $classes['hhgfotr_openai'] = 'TRP_HHGFOTR_OpenAI_Machine_Translator';
         $classes['hhgfotr_zhipu'] = 'TRP_HHGFOTR_Zhipu_Machine_Translator';
+        $classes['hhgfotr_yandex'] = 'TRP_HHGFOTR_Yandex_Machine_Translator';
         $classes['hhg_gemini'] = 'TRP_HHGFOTR_Gemini_Machine_Translator';
         $classes['hhg_hunyuan'] = 'TRP_HHGFOTR_Hunyuan_Machine_Translator';
         $classes['hhg_openai'] = 'TRP_HHGFOTR_OpenAI_Machine_Translator';
         $classes['hhg_zhipu'] = 'TRP_HHGFOTR_Zhipu_Machine_Translator';
+        $classes['hhg_yandex'] = 'TRP_HHGFOTR_Yandex_Machine_Translator';
         return $classes;
     }
 
@@ -163,7 +174,7 @@ class HHGFOTR_TranslatePress {
         $engine = isset( $mt['translation-engine'] ) ? $mt['translation-engine'] : '';
         $enabled = isset( $mt['machine-translation'] ) ? $mt['machine-translation'] : 'no';
         if ( $enabled === 'yes' ) {
-            if ( in_array( $engine, array( 'hhgfotr_zhipu', 'hhg_zhipu', 'hhgfotr_gemini', 'hhg_gemini', 'hhgfotr_openai', 'hhg_openai', 'hhgfotr_hunyuan', 'hhg_hunyuan', 'mtapi' ), true ) ) {
+            if ( in_array( $engine, array( 'hhgfotr_zhipu', 'hhg_zhipu', 'hhgfotr_gemini', 'hhg_gemini', 'hhgfotr_openai', 'hhg_openai', 'hhgfotr_hunyuan', 'hhg_hunyuan', 'hhgfotr_yandex', 'hhg_yandex', 'mtapi' ), true ) ) {
                 return true;
             }
         }
@@ -236,6 +247,9 @@ class HHGFOTR_TranslatePress {
         }
         if ( function_exists('trp_deepl_add_settings') ) {
             trp_deepl_add_settings($mt_settings);
+        }
+        if ( function_exists('trp_yandex_add_settings') ) {
+            trp_yandex_add_settings($mt_settings);
         }
         $trp = TRP_Translate_Press::get_trp_instance();
         $machine_translator = $trp->get_component( 'machine_translator' );
