@@ -61,7 +61,7 @@ class TRP_HHGFOTR_Yandex_Machine_Translator extends TRP_Machine_Translator {
         $response = wp_remote_post( $this->api_endpoint, array(
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'Authorization' => 'ApiKey ' . $api_key,
+                'Authorization' => 'Bearer ' . $api_key,
                 'Referer' => $referer,
                 'User-Agent' => 'TranslatePress/1.0'
             ),
