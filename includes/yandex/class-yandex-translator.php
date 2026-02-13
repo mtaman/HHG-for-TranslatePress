@@ -56,7 +56,7 @@ class TRP_HHGFOTR_Yandex_Machine_Translator extends TRP_Machine_Translator {
             'targetLanguageCode' => $target_language,
             'sourceLanguageCode' => $source_language,
             'format' => 'HTML',
-            'texts' => $strings_array
+            'texts' => array_values( $strings_array )
         );
 
         if ( !empty( $folder_id ) ) {
@@ -68,7 +68,7 @@ class TRP_HHGFOTR_Yandex_Machine_Translator extends TRP_Machine_Translator {
         $response = wp_remote_post( $this->api_endpoint, array(
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $api_key,
+                'Authorization' => 'Api-Key ' . $api_key,
                 'Referer' => $referer,
                 'User-Agent' => 'TranslatePress/1.0'
             ),
@@ -251,7 +251,7 @@ class TRP_HHGFOTR_Yandex_Machine_Translator extends TRP_Machine_Translator {
         $is_error = false;
         $return_message = '';
 
-        if ( 'hhgfotr_yandex' === $translation_engine && 
+        if ( in_array( $translation_engine, array( 'hhgfotr_yandex', 'hhg_yandex' ), true ) && 
              isset($this->settings['trp_machine_translation_settings']['machine-translation']) &&
              $this->settings['trp_machine_translation_settings']['machine-translation'] === 'yes') {
 
@@ -301,20 +301,24 @@ class TRP_HHGFOTR_Yandex_Machine_Translator extends TRP_Machine_Translator {
 
     private function get_optimal_chunk_size( $strings_array ) {
         $base_chunk_size = $this->config['chunk_size'];
-        $total_strings = count( $strings_array );
-        
-        if ( $total_strings === 0 || !is_array( $strings_array ) ) {
+
+        if ( ! is_array( $strings_array ) || empty( $strings_array ) ) {
             return $base_chunk_size;
         }
+
+        $total_strings = count( $strings_array );
+        $string_values = array_values( $strings_array );
         
         $total_length = 0;
         $sample_size = min( 5, $total_strings );
         
         for ( $i = 0; $i < $sample_size; $i++ ) {
-            $total_length += strlen( $strings_array[array_keys($strings_array)[$i]] );
+            if ( isset( $string_values[ $i ] ) && is_string( $string_values[ $i ] ) ) {
+                $total_length += strlen( $string_values[ $i ] );
+            }
         }
         
-        $avg_length = $total_length / $sample_size;
+        $avg_length = $sample_size > 0 ? $total_length / $sample_size : 100;
         
         if ( $avg_length > 200 ) {
             $base_chunk_size = max( 5, intval( $base_chunk_size * 0.6 ) );
