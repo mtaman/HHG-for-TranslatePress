@@ -86,6 +86,8 @@ class HHGFOTR_TranslatePress {
         add_filter( 'trp_machine_translation_sanitize_settings', array( $this, 'extend_machine_translation_keys' ), 10, 2 );
         add_action( 'wp_ajax_hhgfotr_zhipu_test_api', array( $this, 'handle_zhipu_test_api' ) );
         add_action( 'wp_ajax_hhg_zhipu_test_api', array( $this, 'handle_zhipu_test_api' ) );
+        add_action( 'wp_ajax_hhgfotr_yandex_test_api', array( $this, 'handle_yandex_test_api' ) );
+        add_action( 'wp_ajax_hhg_yandex_test_api', array( $this, 'handle_yandex_test_api' ) );
     }
 
     private function load_engines() {
@@ -580,6 +582,7 @@ class HHGFOTR_TranslatePress {
         }
 
         $is_active = in_array( $translation_engine, array( 'hhgfotr_yandex', 'hhg_yandex' ), true );
+        $yandex_test_nonce = wp_create_nonce( 'hhgfotr_yandex_test_nonce' );
         ?>
 
         <div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_yandex" style="<?php echo $is_active ? '' : 'display: none;'; ?>">
@@ -618,6 +621,45 @@ class HHGFOTR_TranslatePress {
                     <option value="yandex" <?php selected( $model, 'yandex' ); ?>><?php esc_html_e( 'Yandex Translator', 'hhg-for-translatepress' ); ?></option>
                 </select>
             </div>
+
+
+            <div class="trp-yandex-test-container" style="margin-top: 15px;">
+                <button type="button" class="button button-secondary" id="hhgfotr-yandex-test-api">
+                    <?php esc_html_e( 'Test Yandex API Connection', 'hhg-for-translatepress' ); ?>
+                </button>
+                <p id="hhgfotr-yandex-test-result" class="trp-description-text" style="margin-top:8px;"></p>
+            </div>
+
+            <script type="text/javascript">
+                (function($){
+                    $(document).on('click', '#hhgfotr-yandex-test-api', function(){
+                        var $button = $(this);
+                        var $result = $('#hhgfotr-yandex-test-result');
+
+                        $button.prop('disabled', true);
+                        $result.text('<?php echo esc_js( __( 'Testing Yandex API connection...', 'hhg-for-translatepress' ) ); ?>').css('color', '');
+
+                        $.post(ajaxurl, {
+                            action: 'hhgfotr_yandex_test_api',
+                            nonce: '<?php echo esc_js( $yandex_test_nonce ); ?>',
+                            api_key: $('#hhgfotr-yandex-key').val(),
+                            folder_id: $('#hhgfotr-yandex-folder-id').val(),
+                            model: $('#hhgfotr-yandex-model').val()
+                        }).done(function(response){
+                            if (response && response.success) {
+                                $result.text(response.data).css('color', '#1a7f37');
+                            } else {
+                                var message = (response && response.data) ? response.data : '<?php echo esc_js( __( 'Yandex API test failed.', 'hhg-for-translatepress' ) ); ?>';
+                                $result.text(message).css('color', '#b32d2e');
+                            }
+                        }).fail(function(){
+                            $result.text('<?php echo esc_js( __( 'Request failed. Please try again.', 'hhg-for-translatepress' ) ); ?>').css('color', '#b32d2e');
+                        }).always(function(){
+                            $button.prop('disabled', false);
+                        });
+                    });
+                })(jQuery);
+            </script>
 
             <span class="trp-description-text">
                 <?php echo wp_kses( __( 'Visit <a href="https://yandex.cloud/en/docs/iam/operations/api-key/create" target="_blank">Yandex Cloud</a> to get your API key and folder ID. The Yandex Translation API provides high-quality translations for many languages.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
@@ -698,7 +740,23 @@ class HHGFOTR_TranslatePress {
             $settings['hhgfotr-zhipu-model'] = sanitize_text_field( $mt_settings['hhg-zhipu-model'] );
         }
 
-        
+        if ( isset( $mt_settings['hhgfotr-yandex-key'] ) ) {
+            $settings['hhgfotr-yandex-key'] = sanitize_text_field( $mt_settings['hhgfotr-yandex-key'] );
+        } elseif ( isset( $mt_settings['hhg-yandex-key'] ) ) {
+            $settings['hhgfotr-yandex-key'] = sanitize_text_field( $mt_settings['hhg-yandex-key'] );
+        }
+
+        if ( isset( $mt_settings['hhgfotr-yandex-folder-id'] ) ) {
+            $settings['hhgfotr-yandex-folder-id'] = sanitize_text_field( $mt_settings['hhgfotr-yandex-folder-id'] );
+        } elseif ( isset( $mt_settings['hhg-yandex-folder-id'] ) ) {
+            $settings['hhgfotr-yandex-folder-id'] = sanitize_text_field( $mt_settings['hhg-yandex-folder-id'] );
+        }
+
+        if ( isset( $mt_settings['hhgfotr-yandex-model'] ) ) {
+            $settings['hhgfotr-yandex-model'] = sanitize_text_field( $mt_settings['hhgfotr-yandex-model'] );
+        } elseif ( isset( $mt_settings['hhg-yandex-model'] ) ) {
+            $settings['hhgfotr-yandex-model'] = sanitize_text_field( $mt_settings['hhg-yandex-model'] );
+        }
 
         return $settings;
     }
@@ -769,7 +827,23 @@ class HHGFOTR_TranslatePress {
             $settings['hhgfotr-zhipu-model'] = sanitize_text_field( $mt_settings['hhg-zhipu-model'] );
         }
 
-        
+        if ( isset( $mt_settings['hhgfotr-yandex-key'] ) ) {
+            $settings['hhgfotr-yandex-key'] = sanitize_text_field( $mt_settings['hhgfotr-yandex-key'] );
+        } elseif ( isset( $mt_settings['hhg-yandex-key'] ) ) {
+            $settings['hhgfotr-yandex-key'] = sanitize_text_field( $mt_settings['hhg-yandex-key'] );
+        }
+
+        if ( isset( $mt_settings['hhgfotr-yandex-folder-id'] ) ) {
+            $settings['hhgfotr-yandex-folder-id'] = sanitize_text_field( $mt_settings['hhgfotr-yandex-folder-id'] );
+        } elseif ( isset( $mt_settings['hhg-yandex-folder-id'] ) ) {
+            $settings['hhgfotr-yandex-folder-id'] = sanitize_text_field( $mt_settings['hhg-yandex-folder-id'] );
+        }
+
+        if ( isset( $mt_settings['hhgfotr-yandex-model'] ) ) {
+            $settings['hhgfotr-yandex-model'] = sanitize_text_field( $mt_settings['hhgfotr-yandex-model'] );
+        } elseif ( isset( $mt_settings['hhg-yandex-model'] ) ) {
+            $settings['hhgfotr-yandex-model'] = sanitize_text_field( $mt_settings['hhg-yandex-model'] );
+        }
 
         return $settings;
     }
@@ -814,6 +888,9 @@ class HHGFOTR_TranslatePress {
         $default_settings['hhgfotr-openai-endpoint'] = 'https://api.openai.com/v1/chat/completions';
         $default_settings['hhgfotr-zhipu-key'] = '';
         $default_settings['hhgfotr-zhipu-model'] = 'general';
+        $default_settings['hhgfotr-yandex-key'] = '';
+        $default_settings['hhgfotr-yandex-folder-id'] = '';
+        $default_settings['hhgfotr-yandex-model'] = 'yandex';
         
         return $default_settings;
     }
@@ -867,6 +944,37 @@ class HHGFOTR_TranslatePress {
         }
         
         wp_send_json_success( 'The API connection was successful! Model:' . $model );
+    }
+
+
+    public function handle_yandex_test_api() {
+        $nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'hhgfotr_yandex_test_nonce' ) ) {
+            wp_send_json_error( 'Security Authentication Failure' );
+        }
+
+        $api_key = isset( $_POST['api_key'] ) ? sanitize_text_field( wp_unslash( $_POST['api_key'] ) ) : '';
+        $folder_id = isset( $_POST['folder_id'] ) ? sanitize_text_field( wp_unslash( $_POST['folder_id'] ) ) : '';
+        $model = isset( $_POST['model'] ) ? sanitize_text_field( wp_unslash( $_POST['model'] ) ) : 'yandex';
+
+        $translator_settings = array(
+            'trp_machine_translation_settings' => array(
+                'translation-engine' => 'hhgfotr_yandex',
+                'machine-translation' => 'yes',
+                'hhgfotr-yandex-key' => $api_key,
+                'hhgfotr-yandex-folder-id' => $folder_id,
+                'hhgfotr-yandex-model' => $model,
+            ),
+        );
+
+        $translator = new TRP_HHGFOTR_Yandex_Machine_Translator( $translator_settings );
+        $api_check = $translator->check_api_key_validity();
+
+        if ( ! empty( $api_check['error'] ) ) {
+            wp_send_json_error( isset( $api_check['message'] ) ? $api_check['message'] : __( 'Yandex API test failed.', 'hhg-for-translatepress' ) );
+        }
+
+        wp_send_json_success( __( 'Yandex API connection successful.', 'hhg-for-translatepress' ) );
     }
 
     public function enqueue_admin_scripts( $hook ) {

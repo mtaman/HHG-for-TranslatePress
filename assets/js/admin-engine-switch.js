@@ -11,6 +11,8 @@ jQuery(document).ready(function($) {
             $('#hhgfotr_openai').show();
         } else if (selectedEngine === 'hhgfotr_zhipu' || selectedEngine === 'hhg_zhipu') {
             $('#hhgfotr_zhipu').show();
+        } else if (selectedEngine === 'hhgfotr_yandex' || selectedEngine === 'hhg_yandex') {
+            $('#hhgfotr_yandex').show();
         }
     });
 
@@ -23,5 +25,7 @@ jQuery(document).ready(function($) {
         $('#hhgfotr_openai').show();
     } else if (currentEngine === 'hhgfotr_zhipu' || currentEngine === 'hhg_zhipu') {
         $('#hhgfotr_zhipu').show();
+    } else if (currentEngine === 'hhgfotr_yandex' || currentEngine === 'hhg_yandex') {
+        $('#hhgfotr_yandex').show();
     }
 });
