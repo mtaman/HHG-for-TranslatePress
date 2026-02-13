@@ -251,13 +251,23 @@ class HHGFOTR_TranslatePress {
         if ( function_exists('trp_yandex_add_settings') ) {
             trp_yandex_add_settings($mt_settings);
         }
+        
         $trp = TRP_Translate_Press::get_trp_instance();
         $machine_translator = $trp->get_component( 'machine_translator' );
         $translation_engine = isset( $mt_settings['translation-engine'] ) ? $mt_settings['translation-engine'] : '';
-        $this->add_gemini_settings( $mt_settings, $machine_translator, $translation_engine );
-        $this->add_hunyuan_settings( $mt_settings, $machine_translator, $translation_engine );
-        $this->add_openai_settings( $mt_settings, $machine_translator, $translation_engine );
-        $this->add_zhipu_settings( $mt_settings, $machine_translator, $translation_engine );
+        
+        // Only include the individual settings functions if needed
+        if (in_array($translation_engine, ['hhgfotr_gemini', 'hhg_gemini'])) {
+            $this->add_gemini_settings($mt_settings, $machine_translator, $translation_engine);
+        } elseif (in_array($translation_engine, ['hhgfotr_hunyuan', 'hhg_hunyuan'])) {
+            $this->add_hunyuan_settings($mt_settings, $machine_translator, $translation_engine);
+        } elseif (in_array($translation_engine, ['hhgfotr_openai', 'hhg_openai'])) {
+            $this->add_openai_settings($mt_settings, $machine_translator, $translation_engine);
+        } elseif (in_array($translation_engine, ['hhgfotr_zhipu', 'hhg_zhipu'])) {
+            $this->add_zhipu_settings($mt_settings, $machine_translator, $translation_engine);
+        } elseif (in_array($translation_engine, ['hhgfotr_yandex', 'hhg_yandex'])) {
+            $this->add_yandex_settings($mt_settings, $machine_translator, $translation_engine);
+        }
     }
 
     private function add_gemini_settings( $mt_settings, $machine_translator, $translation_engine ) {
@@ -498,6 +508,75 @@ class HHGFOTR_TranslatePress {
 
             <span class="trp-description-text">
                <?php echo wp_kses( __( 'Visit the <a href="https://www.bigmodel.cn/invite?icode=BOAFyzK705RHkwZsGiYl40jPr3uHog9F4g5tjuOUqno%3D" target="_blank">ZhiPu AI</a> to get your API key. Select a strategy that best fits your content type.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
+            </span>
+        </div>
+
+        <?php
+    }
+
+    private function add_yandex_settings( $mt_settings, $machine_translator, $translation_engine ) {
+        $api_key = isset( $mt_settings['hhgfotr-yandex-key'] ) ? $mt_settings['hhgfotr-yandex-key'] : ( isset( $mt_settings['hhg-yandex-key'] ) ? $mt_settings['hhg-yandex-key'] : '' );
+        $folder_id = isset( $mt_settings['hhgfotr-yandex-folder-id'] ) ? $mt_settings['hhgfotr-yandex-folder-id'] : ( isset( $mt_settings['hhg-yandex-folder-id'] ) ? $mt_settings['hhg-yandex-folder-id'] : '' );
+        $model = isset( $mt_settings['hhgfotr-yandex-model'] ) ? $mt_settings['hhgfotr-yandex-model'] : ( isset( $mt_settings['hhg-yandex-model'] ) ? $mt_settings['hhg-yandex-model'] : 'yandex' );
+
+        $error_message = '';
+        $show_errors = false;
+        if ( in_array( $translation_engine, array( 'hhgfotr_yandex', 'hhg_yandex' ), true ) && method_exists( $machine_translator, 'check_api_key_validity' ) ) {
+            $api_check = $machine_translator->check_api_key_validity();
+            if ( isset( $api_check ) && true === $api_check['error'] ) {
+                $error_message = $api_check['message'];
+                $show_errors = true;
+            }
+        }
+
+        $text_input_classes = array( 'trp-text-input' );
+        if ( $show_errors ) {
+            $text_input_classes[] = 'trp-text-input-error';
+        }
+
+        $is_active = in_array( $translation_engine, array( 'hhgfotr_yandex', 'hhg_yandex' ), true );
+        ?>
+
+        <div class="trp-engine trp-automatic-translation-engine__container" id="hhgfotr_yandex" style="<?php echo $is_active ? '' : 'display: none;'; ?>">
+            <span class="trp-primary-text-bold"><?php esc_html_e( 'Yandex API Key', 'hhg-for-translatepress' ); ?></span>
+
+            <div class="trp-automatic-translation-api-key-container">
+                <input type="password" id="hhgfotr-yandex-key" placeholder="<?php esc_html_e( 'Add your API Key here...', 'hhg-for-translatepress' ); ?>"
+                       class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>"
+                        name="trp_machine_translation_settings[hhgfotr-yandex-key]"
+                       value="<?php echo esc_attr( $api_key ); ?>" style="width: 100%;max-width:480px;" />
+                <?php
+                if ( $is_active && function_exists( 'trp_output_svg' ) ) {
+                    $machine_translator->automatic_translation_svg_output( $show_errors );
+                }
+                ?>
+            </div>
+
+            <?php if ( $show_errors ) : ?>
+                <span class="trp-error-inline trp-settings-error-text">
+                    <?php echo wp_kses_post( $error_message ); ?>
+                </span>
+            <?php endif; ?>
+
+            <div class="trp-yandex-folder-id-container" style="margin-top: 15px;">
+                <span class="trp-primary-text-bold"><?php esc_html_e( 'Yandex Folder ID', 'hhg-for-translatepress' ); ?></span>
+                <input type="text" id="hhgfotr-yandex-folder-id"
+                       placeholder="<?php esc_html_e( 'Add your Folder ID here...', 'hhg-for-translatepress' ); ?>"
+                       class="<?php echo esc_attr( implode( ' ', $text_input_classes ) ); ?>"
+                       name="trp_machine_translation_settings[hhgfotr-yandex-folder-id]"
+                       value="<?php echo esc_attr( $folder_id ); ?>" style="width: 100%;max-width:480px;margin-top: 5px;" />
+            </div>
+
+            <div class="trp-yandex-model-container" style="margin-top: 15px;">
+               <p><span class="trp-primary-text-bold"><?php esc_html_e( 'Yandex Model', 'hhg-for-translatepress' ); ?></span></p>
+                <select id="hhgfotr-yandex-model" name="trp_machine_translation_settings[hhgfotr-yandex-model]" class="trp-select" style="width: 100%;max-width:480px;">
+                    <option value="yandex" <?php selected( $model, 'yandex' ); ?>><?php esc_html_e( 'Yandex Translator', 'hhg-for-translatepress' ); ?></option>
+                </select>
+            </div>
+
+            <span class="trp-description-text">
+                <?php echo wp_kses( __( 'Visit <a href="https://yandex.cloud/en/docs/iam/operations/api-key/create" target="_blank">Yandex Cloud</a> to get your API key and folder ID. The Yandex Translation API provides high-quality translations for many languages.', 'hhg-for-translatepress' ), [ 'a' => [ 'href' => [], 'title' => [], 'target' => [] ] ] ); ?>
+
             </span>
         </div>
 
