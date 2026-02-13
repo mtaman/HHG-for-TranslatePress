@@ -671,6 +671,11 @@ class HHGFOTR_TranslatePress {
             'label' => esc_html__( 'ZhiPu AI GLM', 'hhg-for-translatepress' ),
         );
 
+        $engines[] = array(
+            'value' => 'hhgfotr_yandex',
+            'label' => esc_html__( 'Yandex Translation', 'hhg-for-translatepress' ),
+        );
+
         return $engines;
     }
 
